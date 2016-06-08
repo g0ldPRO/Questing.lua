@@ -28,7 +28,7 @@ function Dialog:copy(o)
 end
 
 function Dialog:messageMatch(message)
-	for key, text in self.text do
+	for key, text in pairs(self.text) do
 		if stringContains(message, text) then
 			return true
 		end

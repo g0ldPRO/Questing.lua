@@ -54,7 +54,7 @@ function Quest:dialog(message)
 	if self.dialogs == nil then
 		return false
 	end
-	for key, dialog in self.dialogs do
+	for key, dialog in pairs(self.dialogs) do
 		if dialog:messageMatch(message) then
 			dialog.state = true
 			return true
