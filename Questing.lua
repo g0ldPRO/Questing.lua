@@ -19,9 +19,7 @@ function onStart()
 end
 
 function onPathAction()
-	if questManager:path() == false then
-		return fatal("No more quest to run, terminating")
-	end
+	questManager:path()
 end
 
 function onBattleAction()
