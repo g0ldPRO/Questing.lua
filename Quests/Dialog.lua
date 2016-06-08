@@ -29,7 +29,7 @@ end
 
 function Dialog:messageMatch(message)
 	for key, text in pairs(self.text) do
-		if stringContains(message, text) then
+		if sys.stringContains(message, text) then
 			return true
 		end
 	end

@@ -12,4 +12,13 @@ function sys.todo(message)
 	end
 end
 
+function sys.stringContains(haystack, needle)
+	haystack = string.upper(haystack)
+	needle   = string.upper(needle)
+	if string.find(haystack, needle) ~= nil then
+		return true
+	end
+	return false
+end
+
 return sys
