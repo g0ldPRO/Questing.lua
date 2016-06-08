@@ -22,7 +22,7 @@ function QuestManager:new(o)
 end
 
 function QuestManager:next()
-	for id, quest in pairs(self.quests) do
+	for _, quest in pairs(self.quests) do
 		if quest:isDoable() == true then
 			self.selected = quest
 			return quest
@@ -33,37 +33,42 @@ function QuestManager:next()
 end
 
 function QuestManager:isQuestOver()
-	if self.selected == nil or self.selected:isDoable() == false then
+	if self.selected == nil or self.selected:isDone() == true then
 		return true
 	end
 	return false
 end
 
-function QuestManager:path()
+function QuestManager:updateQuest()
 	if QuestManager:isQuestOver() then
 		if self.selected ~= nil then
 			log(self.selected.name .. " is over")
 		end
-		if QuestManager:next() == false then
+		if not QuestManager:next() then
 			log("no more quest to do")
 			return false
 		end
 		log('Starting new quest: ' .. self.selected:message())
 	end
+	return true
+end
+
+function QuestManager:path()
+	if not QuestManager:updateQuest() then
+		return false
+	end
 	return self.selected:path()
 end
 
 function QuestManager:battle()
-	if self.selected == nil then
-		log('No quest selected, cannot call battle')
+	if not QuestManager:updateQuest() then
 		return false
 	end
 	return self.selected:battle()
 end
 
 function QuestManager:dialog(message)
-	if self.selected == nil then
-		log('No quest selected, cannot call dialog')
+	if not QuestManager:updateQuest() then
 		return false
 	end
 	return self.selected:dialog(message)

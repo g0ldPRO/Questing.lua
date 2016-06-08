@@ -25,6 +25,10 @@ function Quest:isDoable()
 	return nil
 end
 
+function Quest:isDone()
+	return self.isDoable(self) == false
+end
+
 function Quest:message()
 	return self.name .. ': ' .. self.description
 end
@@ -54,7 +58,7 @@ function Quest:dialog(message)
 	if self.dialogs == nil then
 		return false
 	end
-	for key, dialog in pairs(self.dialogs) do
+	for _, dialog in pairs(self.dialogs) do
 		if dialog:messageMatch(message) then
 			dialog.state = true
 			return true
