@@ -7,17 +7,19 @@ local QuestManager = {}
 
 
 local StartQuest = require('Quests/000Start')
+local startQuest = StartQuest:new()
 
 local quests = {
-	StartQuest
+	startQuest
 }
 
 function QuestManager:new(o)
 	o = o or {}
 	setmetatable(o, self)
 	self.__index = self
-	self.quests = quests
-	self.selected = nil
+	o.quests = quests
+	o.selected = nil
+	o.isOver = false
 	return o
 end
 
@@ -40,12 +42,12 @@ function QuestManager:isQuestOver()
 end
 
 function QuestManager:updateQuest()
-	if QuestManager:isQuestOver() then
+	if self:isQuestOver() then
 		if self.selected ~= nil then
 			log(self.selected.name .. " is over")
 		end
-		if not QuestManager:next() then
-			log("no more quest to do")
+		if not self:next() then
+			self.isOver = true
 			return false
 		end
 		log('Starting new quest: ' .. self.selected:message())
@@ -54,21 +56,21 @@ function QuestManager:updateQuest()
 end
 
 function QuestManager:path()
-	if not QuestManager:updateQuest() then
+	if not self:updateQuest() then
 		return false
 	end
 	return self.selected:path()
 end
 
 function QuestManager:battle()
-	if not QuestManager:updateQuest() then
+	if not self:updateQuest() then
 		return false
 	end
 	return self.selected:battle()
 end
 
 function QuestManager:dialog(message)
-	if not QuestManager:updateQuest() then
+	if not self:updateQuest() then
 		return false
 	end
 	return self.selected:dialog(message)

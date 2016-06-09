@@ -20,6 +20,9 @@ end
 
 function onPathAction()
 	questManager:path()
+	if questManager.isOver then
+		fatal("No more quest to do. Script terminated.")
+	end
 end
 
 function onBattleAction()
