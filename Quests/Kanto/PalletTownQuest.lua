@@ -7,51 +7,47 @@ local sys    = require "Libs/syslib"
 local Quest  = require "Quests/Quest"
 local Dialog = require "Quests/Dialog"
 
-local name        = 'Start'
-local description = 'from Start to Pokedex'
+local name        = 'PalletTown'
+local description = 'from PalletTown to Route 1'
 
 local dialogs = {
 	mom = Dialog:new({
-		"Remember that I love you",
+		"Remember that I love you", -- REMEMBER THAT, OKAY?!
 		"glad that you dropped by"
 	}),
 	oak = Dialog:new({
 		"but you can have one",
 		"which pokemon do you want"
+	}),
+	bulbasaur = Dialog:new({
+		"grass type Pokemon Bulbasaur",
+	}),
+	charmander = Dialog:new({
+		"fire type Pokemon Charmander",
+	}),
+	squirtle = Dialog:new({
+		"water type Pokemon Squirtle",
 	})
 }
 
-local StartQuest = Quest:new()
-function StartQuest:new()
-	local o = Quest.new(StartQuest, name, description, dialogs)
-	-- setmetatable(o, self)
-	-- self.__index     = self
-	o.maps = {
-		["Start"]                 = StartQuest.Start,
-		["Player Bedroom Pallet"] = StartQuest.PlayerBedroomPallet,
-		["Player House Pallet"]   = StartQuest.PlayerHousePallet,
-		["Pallet Town"]           = StartQuest.PalletTown,
-		["Oaks Lab"]              = StartQuest.OaksLab
-	}
-	return o
+local PalletTownQuest = Quest:new()
+function PalletTownQuest:new()
+	return Quest.new(PalletTownQuest, name, description, dialogs)
 end
 
-function StartQuest:isDoable()
-	sys.todo("invalid for Johto: check the zones")
-	if not hasItem("Pokedex") then
+function PalletTownQuest:isDoable()
+	local mapName = sys.removeCharacter(getMapName(), ' ')
+	if not hasItem("Boulder Badge") and self[mapName] then
 		return true
 	end
 	return false
 end
 
-function StartQuest:Start()
-	if isNpcOnCell(21,38) then
-		return talkToNpcOnCell(21,38)
-	end
-	return moveToCell(26,87)
+function PalletTownQuest:isDone()
+	return getMapName() == "Route 1"
 end
 
-function StartQuest:PlayerBedroomPallet()
+function PalletTownQuest:PlayerBedroomPallet()
 	if getTeamSize() == 0 or hasItem("Pokeball") then
 		return moveToMap("Player House Pallet")
 	else
@@ -65,7 +61,7 @@ function StartQuest:PlayerBedroomPallet()
 	end
 end
 
-function StartQuest:PlayerHousePallet()
+function PalletTownQuest:PlayerHousePallet()
 	if getTeamSize() == 0 or hasItem("Pokeball") then
 		return moveToMap("Link")
 	else
@@ -77,15 +73,15 @@ function StartQuest:PlayerHousePallet()
 	end
 end
 
-function StartQuest:PalletTown()
+function PalletTownQuest:PalletTown()
 	if getTeamSize() == 0 then
 		return moveToMap("Oaks Lab")
-	elseif hasItem("Pokeball") == false then
+	elseif not hasItem("Pokeball") then
 		return moveToMap("Player House Pallet")
 	else
-		if npcExists("#133") then
+		if isNpcVisible("#133") then
 			return talkToNpc("#133")
-		elseif npcExists("Jackson") then
+		elseif isNpcVisible("Jackson") then
 			return talkToNpc("Jackson")
 		else
 			return moveToMap("Route 1")
@@ -93,10 +89,9 @@ function StartQuest:PalletTown()
 	end
 end
 
-function StartQuest:OaksLab()
+function PalletTownQuest:OaksLab()
 	if getTeamSize() == 0 then
 		if self.dialogs.oak.state == false then
-			log(self.dialogs.oak.state)
 			return talkToNpcOnCell(7,4) -- Oak
 		else
 			if KANTO_STARTER_ID == 1 then
@@ -106,32 +101,30 @@ function StartQuest:OaksLab()
 			elseif KANTO_STARTER_ID == 3 then
 				return talkToNpcOnCell(11,6) -- squirtle
 			elseif KANTO_STARTER_ID == 4 then
-				fatal("Missing Pikachu coordinates, help appreciated")
-				-- return talkToNpcOnCell(?,?) -- pikachu
+				if not self.dialogs.bulbasaur.state then
+					pushDialogAnswer(2)
+					return talkToNpcOnCell(9,6)  -- bulbasaur
+				elseif not self.dialogs.charmander.state then
+					pushDialogAnswer(2)
+					return talkToNpcOnCell(10,6) -- charmander
+				elseif not self.dialogs.squirtle.state then
+					pushDialogAnswer(2)
+					return talkToNpcOnCell(11,6) -- squirtle
+				else
+					return talkToNpcOnCell(9,2) -- pikachu
+				end
 			else
-				fatal("undefined KANTO_STARTER_ID" )
+				fatal("undefined KANTO_STARTER_ID")
 			end
 		end
 	else
 		if not hasItem("Pokedex") then
 			return talkToNpcOnCell(7,4) -- Oak
 		else
+			sys.todo("no executed because of the isDoable()")
 			return moveToMap("Link")
 		end
 	end
 end
 
-function StartQuest:dialog(message)
-	if self.dialogs == nil then
-		return false
-	end
-	for _, dialog in pairs(self.dialogs) do
-		if dialog:messageMatch(message) then
-			dialog.state = true
-			return true
-		end
-	end
-	return false
-end
-
-return StartQuest
+return PalletTownQuest

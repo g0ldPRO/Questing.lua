@@ -33,9 +33,9 @@ end
 
 function Quest:path()
 	local mapName = getMapName()
-	assert(self.maps[mapName] ~= nil, self.name .. " quest has no method for map: " .. mapName)
-	self.maps[mapName](self)
-	return true
+	local mapFunction = sys.removeCharacter(mapName, ' ')
+	assert(self[mapFunction] ~= nil, self.name .. " quest has no method for map: " .. mapName)
+	self[mapFunction](self)
 end
 
 function Quest:battle()

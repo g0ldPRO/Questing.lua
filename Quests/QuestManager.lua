@@ -6,11 +6,12 @@
 local QuestManager = {}
 
 
-local StartQuest = require('Quests/000Start')
-local startQuest = StartQuest:new()
+local StartQuest      = require('Quests/Kanto/StartQuest')
+local PalletTownQuest = require('Quests/Kanto/PalletTownQuest')
 
 local quests = {
-	startQuest
+	StartQuest:new(),
+	PalletTownQuest:new(),
 }
 
 function QuestManager:new(o)
