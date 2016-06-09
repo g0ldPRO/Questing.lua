@@ -21,4 +21,8 @@ function sys.stringContains(haystack, needle)
 	return false
 end
 
+function sys.removeCharacter(haystack, char)
+	return haystack:gsub(char .. "+", "")
+end
+
 return sys
