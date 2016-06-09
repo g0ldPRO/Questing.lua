@@ -12,18 +12,8 @@ function Dialog:new(text)
 	setmetatable(o, self)
 	self.__index = self
 	assert(text ~= nil, "The Dialog constructor expect an array of strings")
-	self.state   = false
-	self.text    = text
-	return o
-end
-
-function Dialog:copy(o)
-	assert(o ~= nil, "Cannot create a Dialog copy from a nil variable")
-	setmetatable(o, self)
-	self.__index = self
-	assert(text ~= nil, "The Dialog constructor expect an array of strings")
-	self.state   = o.state
-	self.text    = o.text
+	o.state   = false
+	o.text    = text
 	return o
 end
 
