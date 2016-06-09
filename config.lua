@@ -1,1 +1,1 @@
-KANTO_STARTER_ID=math.random(1,4) -- 1: Fatvegan, 2: Aquaturtle, 3: Salamender, 4: Mickeychu
+KANTO_STARTER_ID=math.random(1,4) -- 1: Fatvegan, 2: Salamender, 3: Aquaturtle, 4: Mickeychu
