@@ -5,18 +5,16 @@
 
 local sys   = require "Libs/syslib"
 
-local Quest = {name = nil, description = nil}
+local Quest = {}
 
-function Quest:new(o, name, description, dialogs)
-	o = o or {}
+function Quest:new(name, description, dialogs)
+	local o = {}
 	setmetatable(o, self)
-	assert(name        ~= nil, "A Quest object needs a name")
-	assert(description ~= nil, "A Quest object needs a description")
 	self.__index     = self
-	self.name        = o.name        or name
-	self.description = o.description or description
-	self.maps        = o.maps        or {}
-	self.dialogs     = o.dialogs     or dialogs
+	o.name        = name
+	o.description = description
+	o.maps        = {}
+	o.dialogs     = dialogs
 	return o
 end
 
@@ -26,7 +24,7 @@ function Quest:isDoable()
 end
 
 function Quest:isDone()
-	return self.isDoable(self) == false
+	return self:isDoable() == false
 end
 
 function Quest:message()
