@@ -16,6 +16,8 @@ function StartQuest:new()
 end
 
 function StartQuest:isDoable()
+	-- a quest should never monopolize a map
+	-- but Start is a special map
 	return getMapName() == "Start"
 end
 
