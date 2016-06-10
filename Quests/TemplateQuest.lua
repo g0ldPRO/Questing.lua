@@ -71,7 +71,7 @@ end
 	To write a function matching a map name, simply write the name of the map
 	and remove the spaces.
 	For instance, the map "Player House Pallet" uses the function:
-		function TemplateQuest:PlayerBedroomPallet() end
+		function TemplateQuest:PlayerHousePallet() end
 		
 	This behaviour can be changed by overloading the Quest:path() function.
 --]]
