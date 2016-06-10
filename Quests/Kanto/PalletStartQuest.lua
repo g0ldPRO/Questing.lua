@@ -30,24 +30,23 @@ local dialogs = {
 	})
 }
 
-local PalletTownQuest = Quest:new()
-function PalletTownQuest:new()
-	return Quest.new(PalletTownQuest, name, description, dialogs)
+local PalletStartQuest = Quest:new()
+function PalletStartQuest:new()
+	return Quest.new(PalletStartQuest, name, description, dialogs)
 end
 
-function PalletTownQuest:isDoable()
-	local mapName = sys.removeCharacter(getMapName(), ' ')
-	if not hasItem("Boulder Badge") and self[mapName] then
+function PalletStartQuest:isDoable()
+	if not hasItem("Boulder Badge") and self:hasMap() then
 		return true
 	end
 	return false
 end
 
-function PalletTownQuest:isDone()
+function PalletStartQuest:isDone()
 	return getMapName() == "Route 1"
 end
 
-function PalletTownQuest:PlayerBedroomPallet()
+function PalletStartQuest:PlayerBedroomPallet()
 	if getTeamSize() == 0 or hasItem("Pokeball") then
 		return moveToMap("Player House Pallet")
 	else
@@ -61,7 +60,7 @@ function PalletTownQuest:PlayerBedroomPallet()
 	end
 end
 
-function PalletTownQuest:PlayerHousePallet()
+function PalletStartQuest:PlayerHousePallet()
 	if getTeamSize() == 0 or hasItem("Pokeball") then
 		return moveToMap("Link")
 	else
@@ -73,7 +72,7 @@ function PalletTownQuest:PlayerHousePallet()
 	end
 end
 
-function PalletTownQuest:PalletTown()
+function PalletStartQuest:PalletTown()
 	if getTeamSize() == 0 then
 		return moveToMap("Oaks Lab")
 	elseif not hasItem("Pokeball") then
@@ -89,7 +88,7 @@ function PalletTownQuest:PalletTown()
 	end
 end
 
-function PalletTownQuest:OaksLab()
+function PalletStartQuest:OaksLab()
 	if getTeamSize() == 0 then
 		if self.dialogs.oak.state == false then
 			return talkToNpcOnCell(7,4) -- Oak
@@ -121,10 +120,18 @@ function PalletTownQuest:OaksLab()
 		if not hasItem("Pokedex") then
 			return talkToNpcOnCell(7,4) -- Oak
 		else
-			sys.todo("no executed because of the isDoable()")
 			return moveToMap("Link")
 		end
 	end
 end
 
-return PalletTownQuest
+function PalletStartQuest:battle()
+	if getPokemonHealthPercent(1) < 50 then
+		if useItemOnPokemon("Potion", 1) then
+			return true
+		end
+	end
+	return attack()
+end
+
+return PalletStartQuest
