@@ -59,4 +59,16 @@ function game.getMaxLevelUsablePokemon()
 	return currentId, currentLevel
 end
 
+function game.getUsablePokemonCountUnderLevel(level)
+	local count = 0
+	for pokemonId=1, getTeamSize(), 1 do
+		local pokemonLevel = getPokemonLevel(pokemonId)
+		if  pokemonLevel < level
+			and isPokemonUsable(pokemonId) then
+			count = count + 1
+		end
+	end
+	return count
+end
+	
 return game
