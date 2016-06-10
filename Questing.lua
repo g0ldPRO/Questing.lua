@@ -8,7 +8,7 @@ author = "g0ld"
 description = [[Everything.]]
 
 dofile "config.lua"
-local sys = require("Libs/syslib")
+
 local QuestManager
 local questManager
 
@@ -18,10 +18,20 @@ function onStart()
 	questManager = QuestManager:new()
 end
 
+function onPause()
+	questManager:pause()
+end
+
+function onResume()
+end
+
+function onStop()
+end
+
 function onPathAction()
 	questManager:path()
 	if questManager.isOver then
-		fatal("No more quest to do. Script terminated.")
+		return fatal("No more quest to do. Script terminated.")
 	end
 end
 
@@ -31,4 +41,14 @@ end
 
 function onDialogMessage(message)
 	questManager:dialog(message)
+end
+
+function onBattleMessage(message)
+end
+
+function onSystemMessage(message)
+end
+
+function onLearningMove(moveName, pokemonIndex)
+	questManager:learningMove(moveName, pokemonIndex)
 end

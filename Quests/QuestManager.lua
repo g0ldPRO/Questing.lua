@@ -6,12 +6,14 @@
 local QuestManager = {}
 
 
-local StartQuest      = require('Quests/Kanto/StartQuest')
-local PalletTownQuest = require('Quests/Kanto/PalletTownQuest')
+local StartQuest          = require('Quests/Kanto/StartQuest')
+local PalletStartQuest    = require('Quests/Kanto/PalletStartQuest')
+local ViridianSchoolQuest = require('Quests/Kanto/ViridianSchoolQuest')
 
 local quests = {
 	StartQuest:new(),
-	PalletTownQuest:new(),
+	PalletStartQuest:new(),
+	ViridianSchoolQuest:new()
 }
 
 function QuestManager:new(o)
@@ -22,6 +24,19 @@ function QuestManager:new(o)
 	o.selected = nil
 	o.isOver = false
 	return o
+end
+
+function QuestManager:message()
+	if self.selected then
+		return self.selected:message()
+	end
+	return nil
+end
+
+function QuestManager:pause()
+	if self.selected then
+		log("Pause Quest: " .. self:message())
+	end
 end
 
 function QuestManager:next()
@@ -75,6 +90,13 @@ function QuestManager:dialog(message)
 		return false
 	end
 	return self.selected:dialog(message)
+end
+
+function QuestManager:learningMove(moveName, pokemonIndex)
+	if not self:updateQuest() then
+		return false
+	end
+	return self.selected:learningMove(moveName, pokemonIndex)
 end
 
 return QuestManager
