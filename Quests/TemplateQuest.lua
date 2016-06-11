@@ -72,7 +72,7 @@ end
 	A Quest is divided by maps. Anytime the onPathAction is executed, the
 	function matching the map name will be called.
 	To write a function matching a map name, simply write the name of the map
-	and remove the spaces.
+	and remove the spaces and dots.
 	For instance, the map "Player House Pallet" uses the function:
 		function TemplateQuest:PlayerHousePallet() end
 		
