@@ -47,6 +47,7 @@ function onBattleMessage(message)
 end
 
 function onSystemMessage(message)
+	questManager:systemMessage(message)
 end
 
 function onLearningMove(moveName, pokemonIndex)

@@ -20,7 +20,7 @@ local dialogs = {
 
 local ViridianSchoolQuest = Quest:new()
 function ViridianSchoolQuest:new()
-	return Quest.new(ViridianSchoolQuest, name, description, dialogs)
+	return Quest.new(ViridianSchoolQuest, name, description, 8, dialogs)
 end
 
 function ViridianSchoolQuest:isDoable()
@@ -61,7 +61,7 @@ function ViridianSchoolQuest:Route1StopHouse()
 end
 
 function ViridianSchoolQuest:isReadyForJackson()
-	if getTeamSize() >= 2 and game.minTeamLevel() >= 8 then
+	if getTeamSize() >= 2 and game.minTeamLevel() >= self.level then
 		return true
 	end
 	return false
@@ -107,7 +107,7 @@ function ViridianSchoolQuest:needPokecenter()
 	if (getTeamSize() == 1 and getPokemonHealthPercent(1) > 50)
 		or (getUsablePokemonCount() > 1
 			-- else we would spend more time evolving the higher level ones
-			and game.getUsablePokemonCountUnderLevel(8) > 0)
+			and game.getUsablePokemonCountUnderLevel(self.level) > 0)
 		then
 		return false
 	end

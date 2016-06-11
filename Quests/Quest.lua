@@ -8,13 +8,13 @@ local game = require "Libs/gamelib"
 
 local Quest = {}
 
-function Quest:new(name, description, dialogs)
+function Quest:new(name, description, level, dialogs)
 	local o = {}
 	setmetatable(o, self)
 	self.__index     = self
 	o.name        = name
 	o.description = description
-	o.maps        = {}
+	o.level       = level or 1
 	o.dialogs     = dialogs
 	return o
 end
@@ -101,6 +101,15 @@ function Quest:dialog(message)
 			dialog.state = true
 			return true
 		end
+	end
+	return false
+end
+
+function Quest:systemMessage(message)
+	if sys.stringContains(message, "black out") and self.level < 100 then
+		self.level = self.level + 1
+		log("Increasing " .. self.name .. "quest level to " .. self.level .. ". Training time!")
+		return true
 	end
 	return false
 end

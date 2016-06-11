@@ -12,7 +12,7 @@ local description = 'Play the Start map'
 
 local StartQuest = Quest:new()
 function StartQuest:new()
-	return Quest.new(StartQuest, name, description, dialogs)
+	return Quest.new(StartQuest, name, description, _, dialogs)
 end
 
 function StartQuest:isDoable()

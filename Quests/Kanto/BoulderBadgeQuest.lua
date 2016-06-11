@@ -13,7 +13,7 @@ local description = 'from route 2 to route 3'
 
 local BoulderBadgeQuest = Quest:new()
 function BoulderBadgeQuest:new()
-	return Quest.new(BoulderBadgeQuest, name, description)
+	return Quest.new(BoulderBadgeQuest, name, description, 11)
 end
 
 function BoulderBadgeQuest:isDoable()
@@ -65,7 +65,7 @@ function BoulderBadgeQuest:needPokecenter()
 	if (getTeamSize() == 1 and getPokemonHealthPercent(1) > 50)
 		or (getUsablePokemonCount() > 1
 			-- else we would spend more time evolving the higher level ones
-			and game.getUsablePokemonCountUnderLevel(12) > 0)
+			and game.getUsablePokemonCountUnderLevel(self.level) > 0)
 		then
 		return false
 	end
@@ -73,7 +73,7 @@ function BoulderBadgeQuest:needPokecenter()
 end
 
 function BoulderBadgeQuest:isReadyForBrock()
-	if game.minTeamLevel() >= 12 then
+	if game.minTeamLevel() >= self.level then
 		return true
 	end
 	return false
@@ -101,7 +101,7 @@ function BoulderBadgeQuest:PewterCity()
 		return moveToMap("Pokecenter Pewter")
 	elseif getItemQuantity("Pokeball") < 50 and getMoney() >= 200 then
 		return moveToMap("Pewter Pokemart")
-	elseif self.isReadyForBrock() then
+	elseif self:isReadyForBrock() then
 		return moveToMap("Pewter Gym")
 	else
 		return moveToMap("Route 2")
@@ -111,7 +111,7 @@ end
 function BoulderBadgeQuest:PewterGym()
 	if hasItem("Boulder Badge") then
 		sys.todo("BoulderBadgeQuest::PewterGym(): buy the TM")
-		return moveToMap("PewterCity")
+		return moveToMap("Pewter City")
 	else
 		return talkToNpcOnCell(7,5)
 	end

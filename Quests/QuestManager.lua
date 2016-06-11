@@ -94,6 +94,13 @@ function QuestManager:dialog(message)
 	return self.selected:dialog(message)
 end
 
+function QuestManager:systemMessage(message)
+	if not self:updateQuest() then
+		return false
+	end
+	return self.selected:systemMessage(message)
+end
+
 function QuestManager:learningMove(moveName, pokemonIndex)
 	if not self:updateQuest() then
 		return false

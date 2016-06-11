@@ -32,7 +32,7 @@ local dialogs = {
 
 local PalletStartQuest = Quest:new()
 function PalletStartQuest:new()
-	return Quest.new(PalletStartQuest, name, description, dialogs)
+	return Quest.new(PalletStartQuest, name, description, _, dialogs)
 end
 
 function PalletStartQuest:isDoable()

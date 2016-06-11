@@ -23,6 +23,9 @@ local Dialog = require "Quests/Dialog"
 -- the same map
 local name        = 'Name of the Quest'
 local description = 'from there to here, you should also now that and this'
+-- The level the pokemon need to reach while farming
+-- This level will increase by one any time you black out
+local level       = 10
 
 -- When a dialog contains one of those strings, the state variable of the
 -- created instance will be set to true.
@@ -40,7 +43,7 @@ local dialogs = {
 -- All The functions of Quest.lua can be used with TemplateQuest.
 local TemplateQuest = Quest:new()
 function TemplateQuest:new()
-	return Quest.new(TemplateQuest, name, description, dialogs)
+	return Quest.new(TemplateQuest, name, description, level, dialogs)
 end
 
 -- If this function return true, the Quest will start.
