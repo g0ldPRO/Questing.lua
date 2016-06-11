@@ -83,12 +83,12 @@ function Quest:battle()
 					return sendPokemon(requestedId)
 				end
 			end
-			return attack() or sendUsablePokemon() or run()
+			return attack() or sendUsablePokemon() or run() or sendAnyPokemon()
 		else
-			return run() or attack() or sendUsablePokemon()
+			return run() or attack() or sendUsablePokemon() or sendAnyPokemon()
 		end
 	else
-		return attack() or sendUsablePokemon()
+		return attack() or sendUsablePokemon() or sendAnyPokemon()
 	end
 end
 
