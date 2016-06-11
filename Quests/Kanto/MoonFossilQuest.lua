@@ -102,7 +102,7 @@ function MoonFossilQuest:MtMoonExit()
 end
 
 function MoonFossilQuest:Route4()
-	return moveToCell(91, 21) -- Cerulean City (avoid water link)
+	return moveToCell(96, 21) -- Cerulean City (avoid water link)
 end
 
 function MoonFossilQuest:PokecenterRoute3()
