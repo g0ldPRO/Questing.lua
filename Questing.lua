@@ -40,14 +40,19 @@ function onBattleAction()
 end
 
 function onDialogMessage(message)
-	questManager:dialog(message)
+	if questManager then
+		questManager:dialog(message)
+	end
 end
 
 function onBattleMessage(message)
+	questManager:battleMessage(message)
 end
 
 function onSystemMessage(message)
-	questManager:systemMessage(message)
+	if questManager then
+		questManager:systemMessage(message)
+	end
 end
 
 function onLearningMove(moveName, pokemonIndex)
