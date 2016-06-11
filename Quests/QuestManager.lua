@@ -10,12 +10,14 @@ local StartQuest          = require('Quests/Kanto/StartQuest')
 local PalletStartQuest    = require('Quests/Kanto/PalletStartQuest')
 local ViridianSchoolQuest = require('Quests/Kanto/ViridianSchoolQuest')
 local BoulderBadgeQuest   = require('Quests/Kanto/BoulderBadgeQuest')
+local MoonFossilQuest     = require('Quests/Kanto/MoonFossilQuest')
 
 local quests = {
 	StartQuest:new(),
 	PalletStartQuest:new(),
 	ViridianSchoolQuest:new(),
-	BoulderBadgeQuest:new()
+	BoulderBadgeQuest:new(),
+	MoonFossilQuest:new()
 }
 
 function QuestManager:new(o)
@@ -92,6 +94,13 @@ function QuestManager:dialog(message)
 		return false
 	end
 	return self.selected:dialog(message)
+end
+
+function QuestManager:battleMessage(message)
+	if not self:updateQuest() then
+		return false
+	end
+	return self.selected:battleMessage(message)
 end
 
 function QuestManager:systemMessage(message)
