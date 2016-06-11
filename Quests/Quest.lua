@@ -6,6 +6,8 @@
 local sys  = require "Libs/syslib"
 local game = require "Libs/gamelib"
 
+local blacklist = require "blacklist"
+
 local Quest = {}
 
 function Quest:new(name, description, level, dialogs)
@@ -28,9 +30,16 @@ function Quest:isDone()
 	return self:isDoable() == false
 end
 
+function Quest:mapToFunction()
+	local mapName = getMapName()
+	local mapFunction = sys.removeCharacter(mapName, ' ')
+	mapFunction = sys.removeCharacter(mapFunction, '.')
+	return mapFunction
+end
+
 function Quest:hasMap()
-	local mapName = sys.removeCharacter(getMapName(), ' ')
-	if self[mapName] then
+	local mapFunction = self:mapToFunction()
+	if self[mapFunction] then
 		return true
 	end
 	return false
@@ -49,26 +58,75 @@ end
 -- use this function then
 function Quest:pokemart(exitMapName)
 	return moveToMap(exitMapName)
+end
 
+function Quest:isTrainingOver()
+	if game.minTeamLevel() >= self.level then
+		return true
+	end
+	return false
+end
+
+function Quest:needPokecenter()
+	if (getTeamSize() == 1 and getPokemonHealthPercent(1) > 50)
+		or (getUsablePokemonCount() > 1
+			-- else we would spend more time evolving the higher level ones
+			and (game.getUsablePokemonCountUnderLevel(self.level) > 0
+				or self:isTrainingOver()))
+		then
+		return false
+	end
+	return true
 end
 
 function Quest:message()
 	return self.name .. ': ' .. self.description
 end
 
+-- I'll need a TeamManager class very soon
+local moonStoneTargets = {
+	"Clefairy",
+	"Jigglypuff",
+	"Munna",
+	"Nidorino",
+	"Nidorina",
+	"Skitty"
+}
+
+function Quest:evolvePokemon()
+	local hasMoonStone = hasItem("Moon Stone")
+	for pokemonId=1, getTeamSize(), 1 do
+		local pokemonName = getPokemonName(pokemonId)
+		if hasMoonStone
+			and sys.tableHasValue(moonStoneTargets, pokemonName)
+		then
+			return useItemOnPokemon("Moon Stone", pokemonId)
+		end
+	end
+	return false
+end
+
 function Quest:path()
+	if self:evolvePokemon() then
+		return true
+	end
 	if not isTeamSortedByLevelAscending() then
 		return sortTeamByLevelAscending()
 	end
-	local mapName = getMapName()
-	local mapFunction = sys.removeCharacter(mapName, ' ')
-	assert(self[mapFunction] ~= nil, self.name .. " quest has no method for map: " .. mapName)
+	local mapFunction = self:mapToFunction()
+	assert(self[mapFunction] ~= nil, self.name .. " quest has no method for map: " .. getMapName())
 	self[mapFunction](self)
+end
+
+function Quest:isPokemonBlacklisted(pokemonName)
+	return sys.tableHasValue(blacklist, pokemonName)
 end
 
 function Quest:battle()
 	sys.debug(name .. ' quest is using the default battle method')
-	if isWildBattle() and (isOpponentShiny() or not isAlreadyCaught()) then
+	if isWildBattle() and (isOpponentShiny()
+		or (not isAlreadyCaught()) and not self:isPokemonBlacklisted(getOpponentName()))
+	then
 		if useItem("Ultra Ball") or useItem("Great Ball") or useItem("Pokeball") then
 			return true
 		end
@@ -105,12 +163,16 @@ function Quest:dialog(message)
 	return false
 end
 
-function Quest:systemMessage(message)
+function Quest:battleMessage(message)
 	if sys.stringContains(message, "black out") and self.level < 100 then
 		self.level = self.level + 1
-		log("Increasing " .. self.name .. "quest level to " .. self.level .. ". Training time!")
+		log("Increasing " .. self.name .. " quest level to " .. self.level .. ". Training time!")
 		return true
 	end
+	return false
+end
+
+function Quest:systemMessage(message)
 	return false
 end
 
