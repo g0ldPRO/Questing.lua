@@ -55,7 +55,7 @@ function PalletStartQuest:PlayerBedroomPallet()
 		elseif isNpcOnCell(6,3) then
 			return talkToNpcOnCell(6,3)
 		else
-			assert(false, "No Pokeball in 'Player Bedroom Pallet' nor in bag")
+			error("No Pokeball in 'Player Bedroom Pallet' nor in bag")
 		end
 	end
 end
@@ -113,7 +113,7 @@ function PalletStartQuest:OaksLab()
 					return talkToNpcOnCell(9,2) -- pikachu
 				end
 			else
-				fatal("undefined KANTO_STARTER_ID")
+				return fatal("undefined KANTO_STARTER_ID")
 			end
 		end
 	else

@@ -17,9 +17,7 @@ function BoulderBadgeQuest:new()
 end
 
 function BoulderBadgeQuest:isDoable()
-	if (not hasItem("Boulder Badge") and self:hasMap())
-		-- disconnected while in the arena with the badge?
-		or (getMapName() == "Pewter Gym" and not hasItem("Cascade Badge"))
+	if not hasItem("Cascade Badge") and self:hasMap()
 	then
 		return true
 	end

@@ -83,7 +83,7 @@ function ViridianSchoolQuest:ViridianCity()
 end
 
 function ViridianSchoolQuest:ViridianCitySchool()
-	if self.dialogs.jacksonDefeated.state or not self.isReadyForJackson() then
+	if self.dialogs.jacksonDefeated.state or not self:isReadyForJackson() then
 		return moveToMap("Viridian City")
 	else
 		return moveToMap("Viridian City School Underground")
