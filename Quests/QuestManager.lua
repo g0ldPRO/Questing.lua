@@ -9,11 +9,13 @@ local QuestManager = {}
 local StartQuest          = require('Quests/Kanto/StartQuest')
 local PalletStartQuest    = require('Quests/Kanto/PalletStartQuest')
 local ViridianSchoolQuest = require('Quests/Kanto/ViridianSchoolQuest')
+local BoulderBadgeQuest   = require('Quests/Kanto/BoulderBadgeQuest')
 
 local quests = {
 	StartQuest:new(),
 	PalletStartQuest:new(),
-	ViridianSchoolQuest:new()
+	ViridianSchoolQuest:new(),
+	BoulderBadgeQuest:new()
 }
 
 function QuestManager:new(o)
