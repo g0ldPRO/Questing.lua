@@ -106,8 +106,8 @@ end
 function ViridianSchoolQuest:needPokecenter()
 	if (getTeamSize() == 1 and getPokemonHealthPercent(1) > 50)
 		or (getUsablePokemonCount() > 1
-		 -- else we would spend more time evolving the higher level ones
-		and game.getUsablePokemonCountUnderLevel(8) > 0)
+			-- else we would spend more time evolving the higher level ones
+			and game.getUsablePokemonCountUnderLevel(8) > 0)
 		then
 		return false
 	end
