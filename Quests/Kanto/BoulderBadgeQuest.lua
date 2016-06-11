@@ -11,16 +11,9 @@ local Dialog = require "Quests/Dialog"
 local name        = 'Boulder Badge'
 local description = 'from route 2 to route 3'
 
-local dialogs = {
-	aDialogInstance = Dialog:new({
-		"This is a dialog you can see in game",
-		"And another one. It works only with game dialogs, not chat or popup"
-	})
-}
-
 local BoulderBadgeQuest = Quest:new()
 function BoulderBadgeQuest:new()
-	return Quest.new(BoulderBadgeQuest, name, description, dialogs)
+	return Quest.new(BoulderBadgeQuest, name, description)
 end
 
 function BoulderBadgeQuest:isDoable()
