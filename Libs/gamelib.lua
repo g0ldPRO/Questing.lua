@@ -23,6 +23,24 @@ function game.isPokemonFullPP(pokemonId)
 	return true
 end
 
+local function returnSorted(valueA, valueB)
+	if valueA > valueB then
+		return valueB, valueA
+	end
+	return valueA, valueB
+end
+
+function game.inRectangle(x1, y1, x2, y2)
+	local aX, bX = returnSorted(x1, x2)
+	local aY, bY = returnSorted(y1, y2)
+	local x = getPlayerX()
+	local y = getPlayerY()
+	if aX <= x and x <= bX and aY <= y and y <= bY then
+		return true
+	end
+	return false
+end
+
 function game.minTeamLevel()
 	local current
 	for pokemonId=1, getTeamSize(), 1 do
