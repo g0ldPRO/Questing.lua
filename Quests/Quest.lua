@@ -62,21 +62,33 @@ end
 
 function Quest:isTrainingOver()
 	if game.minTeamLevel() >= self.level then
+		self.healPokemonOnceTrainingIsOver = true
 		return true
 	end
 	return false
 end
 
 function Quest:needPokecenter()
-	if (getTeamSize() == 1 and getPokemonHealthPercent(1) > 50)
-		or (getUsablePokemonCount() > 1
-			-- else we would spend more time evolving the higher level ones
-			and (game.getUsablePokemonCountUnderLevel(self.level) > 0
-				or self:isTrainingOver()))
+	if getTeamSize() == 1 and getPokemonHealthPercent(1) <= 50 then
+		return true
+	-- else we would spend more time evolving the higher level ones
+	elseif not self:isTrainingOver() then
+		if getUsablePokemonCount() <= 1
+			or game.getUsablePokemonCountUnderLevel(self.level) == 0
 		then
-		return false
+			return true
+		end
+	else
+		if not game.isTeamFullyHealed() then
+			if self.healPokemonOnceTrainingIsOver then
+				return true
+			end
+		else
+			-- the team is healed and we do not need training
+			self.healPokemonOnceTrainingIsOver = false
+		end
 	end
-	return true
+	return false
 end
 
 function Quest:message()
