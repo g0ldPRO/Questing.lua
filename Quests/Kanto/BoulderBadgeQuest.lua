@@ -59,28 +59,10 @@ function BoulderBadgeQuest:Route2Stop2()
 	return moveToMap("Route 2")
 end
 
-function BoulderBadgeQuest:needPokecenter()
-	if (getTeamSize() == 1 and getPokemonHealthPercent(1) > 50)
-		or (getUsablePokemonCount() > 1
-			-- else we would spend more time evolving the higher level ones
-			and game.getUsablePokemonCountUnderLevel(self.level) > 0)
-		then
-		return false
-	end
-	return true
-end
-
-function BoulderBadgeQuest:isReadyForBrock()
-	if game.minTeamLevel() >= self.level then
-		return true
-	end
-	return false
-end
-
 function BoulderBadgeQuest:route2Up()
 	if self.registeredPokecenter ~= "Pokecenter Pewter" then
 		return moveToMap("Pewter City")
-	elseif not self:needPokecenter() and not self:isReadyForBrock() then
+	elseif not self:needPokecenter() and not self:isTrainingOver() then
 		return moveToGrass()
 	else
 		return moveToMap("Pewter City")
@@ -99,7 +81,7 @@ function BoulderBadgeQuest:PewterCity()
 		return moveToMap("Pokecenter Pewter")
 	elseif getItemQuantity("Pokeball") < 50 and getMoney() >= 200 then
 		return moveToMap("Pewter Pokemart")
-	elseif self:isReadyForBrock() then
+	elseif self:isTrainingOver() then
 		return moveToMap("Pewter Gym")
 	else
 		return moveToMap("Route 2")
