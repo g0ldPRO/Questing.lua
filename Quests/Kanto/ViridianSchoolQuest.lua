@@ -48,7 +48,7 @@ function ViridianSchoolQuest:PalletTown()
 end
 
 function ViridianSchoolQuest:Route1()
-	if getTeamSize() == 1 and getPokemonHealthPercent(1) < 50 then
+	if self:needPokecenter() then
 		if useItemOnPokemon("Potion", 1) then
 			return true
 		end
@@ -60,7 +60,7 @@ function ViridianSchoolQuest:Route1StopHouse()
 	return moveToMap("Viridian City")
 end
 
-function ViridianSchoolQuest:isReadyForJackson()
+function ViridianSchoolQuest:isTrainingOver()
 	if getTeamSize() >= 2 and game.minTeamLevel() >= self.level then
 		return true
 	end
@@ -73,9 +73,9 @@ function ViridianSchoolQuest:ViridianCity()
 		return moveToMap("Pokecenter Viridian")
 	elseif getItemQuantity("Pokeball") < 50 and getMoney() >= 200 then
 		return moveToMap("Viridian Pokemart")
-	elseif not self.dialogs.jacksonDefeated.state and self:isReadyForJackson() then
+	elseif not self.dialogs.jacksonDefeated.state and self:isTrainingOver() then
 		return moveToMap("Viridian City School")
-	elseif not self:isReadyForJackson() then
+	elseif not self:isTrainingOver() then
 		return moveToMap("Route 22")
 	else
 		return moveToMap("Route 2")
@@ -83,7 +83,7 @@ function ViridianSchoolQuest:ViridianCity()
 end
 
 function ViridianSchoolQuest:ViridianCitySchool()
-	if self.dialogs.jacksonDefeated.state or not self:isReadyForJackson() then
+	if self.dialogs.jacksonDefeated.state or not self:isTrainingOver() then
 		return moveToMap("Viridian City")
 	else
 		return moveToMap("Viridian City School Underground")
@@ -91,7 +91,7 @@ function ViridianSchoolQuest:ViridianCitySchool()
 end
 
 function ViridianSchoolQuest:ViridianCitySchoolUnderground()
-	if self.dialogs.jacksonDefeated.state or not self:isReadyForJackson() then
+	if self.dialogs.jacksonDefeated.state or not self:isTrainingOver() then
 		return moveToMap("Viridian City School")
 	elseif not isNpcVisible("Jackson") then
 		self.dialogs.jacksonDefeated.state = true
@@ -103,21 +103,10 @@ function ViridianSchoolQuest:ViridianCitySchoolUnderground()
 	end	
 end
 
-function ViridianSchoolQuest:needPokecenter()
-	if (getTeamSize() == 1 and getPokemonHealthPercent(1) > 50)
-		or (getUsablePokemonCount() > 1
-			-- else we would spend more time evolving the higher level ones
-			and game.getUsablePokemonCountUnderLevel(self.level) > 0)
-		then
-		return false
-	end
-	return true
-end
-
 function ViridianSchoolQuest:Route22()
 	if self:needPokecenter() then
 		return moveToMap("Viridian City")
-	elseif self:isReadyForJackson() then
+	elseif self:isTrainingOver() then
 		return moveToMap("Viridian City")
 	else
 		return moveToGrass()
