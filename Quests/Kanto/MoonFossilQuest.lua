@@ -107,23 +107,4 @@ function MoonFossilQuest:PokecenterRoute3()
 	self:pokecenter("Route 3")
 end
 
-function MoonFossilQuest:ViridianPokemart()
-	local pokeballCount = getItemQuantity("Pokeball")
-	local money         = getMoney()
-	if money >= 200 and pokeballCount < 50 then
-		if not isShopOpen() then
-			return talkToNpcOnCell(3,5)
-		else
-			local pokeballToBuy = 50 - pokeballCount
-			local maximumBuyablePokeballs = money / 200
-			if maximumBuyablePokeballs < pokeballToBuy then
-				pokeballToBuy = maximumBuyablePokeballs
-			end
-			return buyItem("Pokeball", pokeballToBuy)
-		end
-	else
-		return moveToMap("Viridian City")
-	end
-end
-
 return MoonFossilQuest

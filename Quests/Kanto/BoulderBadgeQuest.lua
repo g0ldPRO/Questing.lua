@@ -73,6 +73,8 @@ function BoulderBadgeQuest:PewterCity()
 	if isNpcOnCell(23, 22) then
 		-- red blocking the way after beating Brock
 		return talkToNpcOnCell(23, 22)
+	elseif getItemQuantity("Pokeball") < 50 and getMoney() >= 200 then
+		return moveToMap("Pewter Pokemart")
 	elseif hasItem("Boulder Badge") then
 		return moveToMap("Route 3")
 	elseif self.registeredPokecenter ~= "Pokecenter Pewter"
