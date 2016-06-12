@@ -37,7 +37,6 @@ function MoonFossilQuest:isDone()
 end
 
 function MoonFossilQuest:Route3()
-	self.healPokemonOnceTrainingIsOver = false
 	if self:needPokecenter()
 		or not game.isTeamFullyHealed()
 		or self.registeredPokecenter ~= "Pokecenter Route 3"
@@ -54,7 +53,6 @@ function MoonFossilQuest:MtMoon1F()
 	elseif isNpcOnCell(19, 16) then
 		return talkToNpcOnCell(19, 16) -- moon stone
 	elseif not self:isTrainingOver() then
-		self.healPokemonOnceTrainingIsOver = true
 		return moveToRectangle(37, 60, 40, 62)
 	elseif self.healPokemonOnceTrainingIsOver then
 		return moveToMap("Route 3")
