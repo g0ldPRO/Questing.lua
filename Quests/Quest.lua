@@ -69,8 +69,10 @@ function Quest:isTrainingOver()
 end
 
 function Quest:needPokecenter()
-	if getTeamSize() == 1 and getPokemonHealthPercent(1) <= 50 then
-		return true
+	if getTeamSize() == 1 then
+		if getPokemonHealthPercent(1) <= 50 then
+			return true
+		end
 	-- else we would spend more time evolving the higher level ones
 	elseif not self:isTrainingOver() then
 		if getUsablePokemonCount() <= 1
@@ -158,6 +160,8 @@ function Quest:battle()
 			return run() or attack() or sendUsablePokemon() or sendAnyPokemon()
 		end
 	else
+		-- bug: if last pokemons have only damaging but type ineffective
+		-- attacks, then we cannot use the non damaging ones to continue.
 		return attack() or sendUsablePokemon() or sendAnyPokemon()
 	end
 end
