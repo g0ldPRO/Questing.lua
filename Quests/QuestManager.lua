@@ -55,15 +55,18 @@ function QuestManager:next()
 end
 
 function QuestManager:isQuestOver()
-	if self.selected == nil or self.selected:isDone() == true then
+	if not self.selected or self.selected:isDone() then
 		return true
 	end
 	return false
 end
 
 function QuestManager:updateQuest()
+	if getMapName() == "" then
+		return false
+	end
 	if self:isQuestOver() then
-		if self.selected ~= nil then
+		if self.selected then
 			log(self.selected.name .. " is over")
 		end
 		if not self:next() then
@@ -90,7 +93,7 @@ function QuestManager:battle()
 end
 
 function QuestManager:dialog(message)
-	if not self:updateQuest() then
+	if not self.selected then
 		return false
 	end
 	return self.selected:dialog(message)
@@ -104,7 +107,7 @@ function QuestManager:battleMessage(message)
 end
 
 function QuestManager:systemMessage(message)
-	if not self:updateQuest() then
+	if not self.selected then
 		return false
 	end
 	return self.selected:systemMessage(message)
