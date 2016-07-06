@@ -54,7 +54,8 @@ function MoonFossilQuest:MtMoon1F()
 		return talkToNpcOnCell(19, 16) -- moon stone
 	elseif not self:isTrainingOver() then
 		return moveToRectangle(37, 60, 40, 62)
-	elseif self.healPokemonOnceTrainingIsOver then
+	elseif self.healPokemonOnceTrainingIsOver
+		and not game.isTeamFullyHealed() then
 		return moveToMap("Route 3")
 	else
 		return moveToCell(21, 20) -- Mt. Moon B1F
