@@ -12,6 +12,19 @@ function sys.todo(message)
 	end
 end
 
+function sys.error(functionName, message)
+	fatal("error: " .. functionName .. ": " .. message)
+	return false
+end
+
+function sys.assert(test, functionName, message)
+	if not test then
+		fatal("error: " .. functionName .. ": " .. message)
+		return false
+	end
+	return true
+end
+
 function sys.stringContains(haystack, needle)
 	haystack = string.upper(haystack)
 	needle   = string.upper(needle)
@@ -21,8 +34,8 @@ function sys.stringContains(haystack, needle)
 	return false
 end
 
-function sys.removeCharacter(haystack, char)
-	return haystack:gsub("%" .. char .. "+", "")
+function sys.removeCharacter(str, character)
+	return str:gsub("%" .. character .. "+", "")
 end
 
 function sys.tableHasValue(tab, val)
