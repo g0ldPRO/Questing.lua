@@ -11,7 +11,7 @@ function Dialog:new(text)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
-	assert(text ~= nil, "The Dialog constructor expect an array of strings")
+	assert(text ~= nil, "The Dialog constructor expects an array of strings")
 	o.state   = false
 	o.text    = text
 	return o
