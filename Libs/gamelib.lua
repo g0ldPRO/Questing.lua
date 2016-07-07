@@ -23,6 +23,15 @@ function game.isPokemonFullPP(pokemonId)
 	return true
 end
 
+function game.hasPokemonWithMove(Move)
+	for pokemonId=1, getTeamSize(), 1 do
+		if hasMove(pokemonId, Move) then
+			return true
+		end
+	end
+	return false
+end
+
 local function returnSorted(valueA, valueB)
 	if valueA > valueB then
 		return valueB, valueA
