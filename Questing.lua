@@ -29,11 +29,7 @@ function onStop()
 end
 
 function onPathAction()
-	if questManager:path() == false then
-		-- may be a bug (like NPC not loaded yet)
-		log("No action found in quest: the server may be lagging. Using placeholder action.")
-		return swapPokemon(1,2) or moveNearExit() or moveToGrass()
-	end
+	questManager:path()
 	if questManager.isOver then
 		return fatal("No more quest to do. Script terminated.")
 	end
@@ -44,9 +40,7 @@ function onBattleAction()
 end
 
 function onDialogMessage(message)
-	if questManager then
-		questManager:dialog(message)
-	end
+	questManager:dialog(message)
 end
 
 function onBattleMessage(message)
@@ -54,9 +48,7 @@ function onBattleMessage(message)
 end
 
 function onSystemMessage(message)
-	if questManager then
-		questManager:systemMessage(message)
-	end
+	questManager:systemMessage(message)
 end
 
 function onLearningMove(moveName, pokemonIndex)
