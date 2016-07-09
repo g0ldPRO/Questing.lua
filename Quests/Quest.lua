@@ -18,6 +18,7 @@ function Quest:new(name, description, level, dialogs)
 	o.description = description
 	o.level       = level or 1
 	o.dialogs     = dialogs
+	o.training    = true
 	return o
 end
 
@@ -62,10 +63,21 @@ end
 
 function Quest:isTrainingOver()
 	if game.minTeamLevel() >= self.level then
-		self.healPokemonOnceTrainingIsOver = true
+		if self.training then -- end the training
+			self:stopTraining()
+		end
 		return true
 	end
 	return false
+end
+
+function Quest:startTraining()
+	self.training = true
+end
+
+function Quest:stopTraining()
+	self.training = false
+	self.healPokemonOnceTrainingIsOver = true
 end
 
 function Quest:needPokecenter()
@@ -121,6 +133,10 @@ function Quest:evolvePokemon()
 end
 
 function Quest:path()
+	if self.inBattle then
+		self.inBattle = false
+		self:battleEnd()
+	end
 	if self:evolvePokemon() then
 		return true
 	end
@@ -136,33 +152,54 @@ function Quest:isPokemonBlacklisted(pokemonName)
 	return sys.tableHasValue(blacklist, pokemonName)
 end
 
-function Quest:battle()
-	sys.debug(name .. ' quest is using the default battle method')
-	if isWildBattle() and (isOpponentShiny()
-		or (not isAlreadyCaught()) and not self:isPokemonBlacklisted(getOpponentName()))
-	then
+function Quest:battleBegin()
+end
+
+function Quest:battleEnd()
+end
+
+function Quest:wildBattle()
+	if isOpponentShiny() then
+		if useItem("Ultra Ball") or useItem("Great Ball") or useItem("Pokeball") then
+			return true
+		end
+	elseif not isAlreadyCaught() then
 		if useItem("Ultra Ball") or useItem("Great Ball") or useItem("Pokeball") then
 			return true
 		end
 	end
-	if isWildBattle() then
-		if getTeamSize() == 1 or getUsablePokemonCount() > 1 then
-			local opponentLevel = getOpponentLevel()
-			local myPokemonLvl  = getPokemonLevel(getActivePokemonNumber())
-			if opponentLevel >= myPokemonLvl then
-				local requestedId, requestedLevel = game.getMaxLevelUsablePokemon()
-				if requestedId ~= nil and requestedLevel > myPokemonLvl then
-					return sendPokemon(requestedId)
-				end
+	
+	-- if we do not try to catch it
+	if getTeamSize() == 1 or getUsablePokemonCount() > 1 then
+		local opponentLevel = getOpponentLevel()
+		local myPokemonLvl  = getPokemonLevel(getActivePokemonNumber())
+		if opponentLevel >= myPokemonLvl then
+			local requestedId, requestedLevel = game.getMaxLevelUsablePokemon()
+			if requestedId ~= nil and requestedLevel > myPokemonLvl then
+				return sendPokemon(requestedId)
 			end
-			return attack() or sendUsablePokemon() or run() or sendAnyPokemon()
-		else
-			return run() or attack() or sendUsablePokemon() or sendAnyPokemon()
 		end
+		return attack() or sendUsablePokemon() or run() or sendAnyPokemon()
 	else
-		-- bug: if last pokemons have only damaging but type ineffective
-		-- attacks, then we cannot use the non damaging ones to continue.
-		return attack() or sendUsablePokemon() or sendAnyPokemon()
+		return run() or attack() or sendUsablePokemon() or sendAnyPokemon()
+	end
+end
+
+function Quest:trainerBattle()
+	-- bug: if last pokemons have only damaging but type ineffective
+	-- attacks, then we cannot use the non damaging ones to continue.
+	return attack() or sendUsablePokemon() or sendAnyPokemon() -- or game.useAnyMove()
+end
+
+function Quest:battle()
+	if not self.inBattle then
+		self.inBattle = true
+		self:battleBegin()
+	end
+	if isWildBattle() then
+		return self:wildBattle()
+	else
+		return self:trainerBattle()
 	end
 end
 
@@ -180,8 +217,9 @@ function Quest:dialog(message)
 end
 
 function Quest:battleMessage(message)
-	if sys.stringContains(message, "black out") and self.level < 100 then
+	if sys.stringContains(message, "black out") and self.level < 100 and self:isTrainingOver() then
 		self.level = self.level + 1
+		self:startTraining()
 		log("Increasing " .. self.name .. " quest level to " .. self.level .. ". Training time!")
 		return true
 	end
