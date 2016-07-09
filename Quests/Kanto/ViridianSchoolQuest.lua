@@ -40,7 +40,7 @@ function ViridianSchoolQuest:PlayerBedroomPallet()
 end
 
 function ViridianSchoolQuest:PlayerHousePallet()
-	return moveToMap("Player Bedroom Pallet")
+	return moveToMap("Link")
 end
 
 function ViridianSchoolQuest:PalletTown()
