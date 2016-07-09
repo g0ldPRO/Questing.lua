@@ -60,8 +60,12 @@ function MoonFossilQuest:MtMoon1F()
 end
 
 function MoonFossilQuest:MtMoonB1F()
-	if game.inRectangle(55, 14, 76, 35) then
-		return moveToCell(56, 34) -- Mt. Moon B2F
+	if game.inRectangle(56, 18, 66, 21) then
+		return moveToCell(65, 20) -- Mt. Moon B2F (wrong way)
+	elseif game.inRectangle(73, 15, 78, 34)
+		or game.inRectangle(53, 29, 78, 34)
+	then
+		return moveToCell(56, 34) -- Mt. Moon B2F (right way)
 	elseif game.inRectangle(32, 19, 42, 22) then
 		return moveToCell(41, 20) -- Mt. Moon Exit
 	else
