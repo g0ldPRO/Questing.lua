@@ -28,7 +28,7 @@ function RockTunnelQuest:isDoable()
 end
 
 function RockTunnelQuest:isDone()
-	if getMapName() == "Lavender Town" then
+	if getMapName() == "Celadon City" then
 		return true
 	else
 		return false
@@ -75,6 +75,56 @@ function RockTunnelQuest:RockTunnel2()
 	elseif game.inRectangle(6,12,27,28) then
 		return moveToCell(8,26)
 	else
+	end
+end
+
+function RockTunnelQuest:LavenderTown()
+	if self:needPokecenter() or not game.isTeamFullyHealed() or not self.registeredPokecenter == "Pokecenter Lavender" then
+		return moveToMap("Pokecenter Lavender")
+	else
+		return moveToMap("Route 8")
+	end
+end
+
+function RockTunnelQuest:PokecenterLavender()
+	self:pokecenter("Lavender Town")
+end
+
+function RockTunnelQuest:Route8()
+	if isNpcOnCell(56,3) then -- Item: Leppa Berry
+		return talkToNpcOnCell(56,3)
+	elseif isNpcOnCell(57,3) then -- Item: Leppa Berry
+		return talkToNpcOnCell(57,3)
+	elseif isNpcOnCell(52,9) then --Pokemon: Growlithe LvL 10 (BlueBall)
+		return talkToNpcOnCell(52,9)
+	elseif isNpcOnCell(17,3) then  -- Item: Rawst Berry
+		return talkToNpcOnCell(17,3)
+	elseif isNpcOnCell(18,3) then  -- Item: Lum Berry
+		return talkToNpcOnCell(18,3)
+	elseif isNpcOnCell(18,3) then  -- Item: Perism Berry
+		return talkToNpcOnCell(18,3)
+	else
+		return moveToMap("Underground House 4")
+	end
+end
+
+function RockTunnelQuest:UndergroundHouse4()
+	return moveToMap("Underground1")
+end
+
+function RockTunnelQuest:Underground1()
+	return moveToMap("Underground House 3")
+end
+
+function RockTunnelQuest:UndergroundHouse3()
+	return moveToMap("Route 7")
+end
+
+function RockTunnelQuest:Route7()
+	if isNpcOnCell(8,30) then -- Item: Sitrus Berry
+		return talkToNpcOnCell(8,30)
+	else
+		return moveToMap("Celadon City")
 	end
 end
 
