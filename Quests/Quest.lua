@@ -236,8 +236,27 @@ local hmMoves = {
 	"flash"
 }
 
+function Quest:chooseForgetMove(moveName, pokemonIndex) -- Calc the WrostAbility ((Power x PP)/(Accuract/100))
+	local ForgetMoveName
+	local ForgetMoveTP = 9999
+	for moveId=1, 4, 1 do
+		local MoveName = getPokemonMoveName(pokemonIndex, moveId)
+		if MoveName == nil or MoveName == "cut" or MoveName == "surf" or MoveName == "flash" then
+		else
+		local CalcMoveTP = math.modf((getPokemonMaxPowerPoints(pokemonIndex,moveId) * getPokemonMovePower(pokemonIndex,moveId))/(math.abs(getPokemonMoveAccuracy(pokemonIndex,moveId)) / 100))
+			if CalcMoveTP < ForgetMoveTP then
+				ForgetMoveTP = CalcMoveTP
+				ForgetMoveName = MoveName
+			end
+		end
+	end
+	log("[Learning Move: " .. moveName .. "  -->  Forget Move: " .. ForgetMoveName .. "]")
+	return ForgetMoveName
+end
+
+
 function Quest:learningMove(moveName, pokemonIndex)
-	return forgetAnyMoveExcept(hmMoves)
+	return forgetMove(self:chooseForgetMove(moveName, pokemonIndex))
 end
 
 return Quest
