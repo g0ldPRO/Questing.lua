@@ -61,14 +61,22 @@ function RocketCeladonQuest:new()
 end
 
 function RocketCeladonQuest:isDoable()
-	if self:hasMap() and not hasItem("Rainbow Badge") then
-		return true
+	if self:hasMap() then
+		if getMapName == "Celadon City" then 
+			if isNpcOnCell(48,34) then
+				return true
+			else
+				return false
+			end
+		else
+			return true
+		end
 	end
 	return false
 end
 
 function RocketCeladonQuest:isDone()
-	if getMapName() == "Celadon City" and not isNpcOnCell(48,34) then
+	if hasItem("Silph Scope") and getMapName() == "Celadon City" and not isNpcOnCell(48,34) then
 		return true
 	else
 		return false
