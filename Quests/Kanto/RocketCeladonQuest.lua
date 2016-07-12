@@ -62,12 +62,8 @@ end
 
 function RocketCeladonQuest:isDoable()
 	if self:hasMap() then
-		if getMapName == "Celadon City" then 
-			if isNpcOnCell(48,34) then
-				return true
-			else
-				return false
-			end
+		if getMapName() == "Celadon City" then 
+			return isNpcOnCell(48,34)
 		else
 			return true
 		end
@@ -76,7 +72,7 @@ function RocketCeladonQuest:isDoable()
 end
 
 function RocketCeladonQuest:isDone()
-	if hasItem("Silph Scope") and getMapName() == "Celadon City" and not isNpcOnCell(48,34) then
+	if getMapName() == "Celadon City" and not isNpcOnCell(48,34) then
 		return true
 	else
 		return false
