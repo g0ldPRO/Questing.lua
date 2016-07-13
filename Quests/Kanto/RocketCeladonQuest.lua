@@ -80,7 +80,7 @@ function RocketCeladonQuest:isDone()
 end
 
 function RocketCeladonQuest:Route7()
-	if self:needPokecenter() or not game.isTeamFullyHealed() or not self.registeredPokecenter == "Pokecenter Celadon" then
+	if self:needPokecenter() or not self.registeredPokecenter == "Pokecenter Celadon" then
 		return moveToMap("Celadon City")
 	elseif not self:isTrainingOver() then
 		if not game.inRectangle(12,8,21,21) then
