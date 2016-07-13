@@ -108,5 +108,22 @@ function game.getUsablePokemonCountUnderLevel(level)
 	end
 	return count
 end
+
+function game.getFirstUsablePokemon()
+	for pokemonId=1, getTeamSize(), 1 do
+		if isPokemonUsable(pokemonId) then
+			return pokemonId
+		end
+	end
+end
+
+function game.getPokemonIdWithItem(ItemName)	
+	for pokemonId=1, getTeamSize(), 1 do
+		if getPokemonHeldItem(pokemonId) == ItemName then
+			return pokemonId
+		end
+	end
+	return 0
+end
 	
 return game

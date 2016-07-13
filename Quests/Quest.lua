@@ -86,6 +86,28 @@ function Quest:isTrainingOver()
 	return false
 end
 
+function Quest:leftovers()
+	ItemName = "Leftovers"
+	local PokemonNeedLeftovers = game.getFirstUsablePokemon()
+	local PokemonWithLeftovers = game.getPokemonIdWithItem(ItemName)
+	
+	if PokemonWithLeftovers > 0 then
+		if PokemonNeedLeftovers == PokemonWithLeftovers  then
+			return false -- now leftovers is on rightpokemon
+		else
+			takeItemFromPokemon(PokemonWithLeftovers)
+			return true
+		end
+	else
+		if hasItem(ItemName) then
+			giveItemToPokemon(ItemName,PokemonNeedLeftovers)
+			return true
+		else
+			return false-- don't have leftovers in bag and is not on pokemons
+		end
+	end
+end
+
 function Quest:startTraining()
 	self.training = true
 end
@@ -165,6 +187,9 @@ function Quest:path()
 	end
 	if not isTeamSortedByLevelAscending() then
 		return sortTeamByLevelAscending()
+	end
+	if self:leftovers() then
+		return true
 	end
 	local mapFunction = self:mapToFunction()
 	assert(self[mapFunction] ~= nil, self.name .. " quest has no method for map: " .. getMapName())
