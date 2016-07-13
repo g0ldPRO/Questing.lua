@@ -23,6 +23,17 @@ function game.isPokemonFullPP(pokemonId)
 	return true
 end
 
+function game.useAnyMove()
+	local pokemonId = getActivePokemonNumber()
+	for i=1,4 do
+		local moveName = getPokemonMoveName(pokemonId, i)
+		if not moveName and getPokemonMoveRemainingPowerPoints() > 0 then
+			return useMove(moveName)
+		end
+	end
+	return false
+end
+
 function game.hasPokemonWithMove(Move)
 	for pokemonId=1, getTeamSize(), 1 do
 		if hasMove(pokemonId, Move) then
