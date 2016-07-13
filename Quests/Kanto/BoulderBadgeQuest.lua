@@ -73,7 +73,7 @@ function BoulderBadgeQuest:PewterCity()
 	if isNpcOnCell(23, 22) then
 		-- red blocking the way after beating Brock
 		return talkToNpcOnCell(23, 22)
-	elseif getItemQuantity("Pokeball") < 50 and getMoney() >= 200 then
+	elseif self:needPokemart() then
 		return moveToMap("Pewter Pokemart")
 	elseif hasItem("Boulder Badge") then
 		return moveToMap("Route 3")
@@ -108,22 +108,7 @@ function BoulderBadgeQuest:PokecenterPewter()
 end
 
 function BoulderBadgeQuest:PewterPokemart()
-	local pokeballCount = getItemQuantity("Pokeball")
-	local money         = getMoney()
-	if money >= 200 and pokeballCount < 50 then
-		if not isShopOpen() then
-			return talkToNpcOnCell(3,5)
-		else
-			local pokeballToBuy = 50 - pokeballCount
-			local maximumBuyablePokeballs = money / 200
-			if maximumBuyablePokeballs < pokeballToBuy then
-				pokeballToBuy = maximumBuyablePokeballs
-			end
-			return buyItem("Pokeball", pokeballToBuy)
-		end
-	else
-		return moveToMap("Pewter City")
-	end
+	self:pokemart("Pewter City")
 end
 
 return BoulderBadgeQuest
