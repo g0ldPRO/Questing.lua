@@ -71,7 +71,7 @@ function ViridianSchoolQuest:ViridianCity()
 	if not game.isTeamFullyHealed()
 		or self.registeredPokecenter ~= "Pokecenter Viridian" then
 		return moveToMap("Pokecenter Viridian")
-	elseif getItemQuantity("Pokeball") < 50 and getMoney() >= 200 then
+	elseif self:needPokemart() then
 		return moveToMap("Viridian Pokemart")
 	elseif not self.dialogs.jacksonDefeated.state and self:isTrainingOver() then
 		return moveToMap("Viridian City School")
@@ -113,30 +113,12 @@ function ViridianSchoolQuest:Route22()
 	end	
 end
 
---[[
-redondant sub maps
---]]
 function ViridianSchoolQuest:PokecenterViridian()
-	self:pokecenter("Viridian City")
+	return self:pokecenter("Viridian City")
 end
 
 function ViridianSchoolQuest:ViridianPokemart()
-	local pokeballCount = getItemQuantity("Pokeball")
-	local money         = getMoney()
-	if money >= 200 and pokeballCount < 50 then
-		if not isShopOpen() then
-			return talkToNpcOnCell(3,5)
-		else
-			local pokeballToBuy = 50 - pokeballCount
-			local maximumBuyablePokeballs = money / 200
-			if maximumBuyablePokeballs < pokeballToBuy then
-				pokeballToBuy = maximumBuyablePokeballs
-			end
-			return buyItem("Pokeball", pokeballToBuy)
-		end
-	else
-		return moveToMap("Viridian City")
-	end
+	return self:pokemart("Viridian City")
 end
 
 return ViridianSchoolQuest
