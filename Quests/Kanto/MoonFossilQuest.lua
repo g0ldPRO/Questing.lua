@@ -106,7 +106,7 @@ function MoonFossilQuest:Route4()
 end
 
 function MoonFossilQuest:PokecenterRoute3()
-	self:pokecenter("Route 3")
+	return self:pokecenter("Route 3")
 end
 
 return MoonFossilQuest
