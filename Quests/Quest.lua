@@ -23,7 +23,7 @@ function Quest:new(name, description, level, dialogs)
 end
 
 function Quest:isDoable()
-	error("function 'isDone' is not overloaded")
+	sys.error("Quest:isDoable", "function is not overloaded in quest: " .. self.name)
 	return nil
 end
 
@@ -58,7 +58,22 @@ end
 -- at a point in the game we'll always need to buy the same things
 -- use this function then
 function Quest:pokemart(exitMapName)
-	return moveToMap(exitMapName)
+	local pokeballCount = getItemQuantity("Pokeball")
+	local money         = getMoney()
+	if money >= 200 and pokeballCount < 50 then
+		if not isShopOpen() then
+			return talkToNpcOnCell(3,5)
+		else
+			local pokeballToBuy = 50 - pokeballCount
+			local maximumBuyablePokeballs = money / 200
+			if maximumBuyablePokeballs < pokeballToBuy then
+				pokeballToBuy = maximumBuyablePokeballs
+			end
+			return buyItem("Pokeball", pokeballToBuy)
+		end
+	else
+		return moveToMap(exitMapName)
+	end
 end
 
 function Quest:isTrainingOver()
@@ -78,6 +93,14 @@ end
 function Quest:stopTraining()
 	self.training = false
 	self.healPokemonOnceTrainingIsOver = true
+end
+
+function Quest:needPokemart()
+	-- TODO: ItemManager
+	if getItemQuantity("Pokeball") < 50 and getMoney() >= 200 then
+		return true
+	end
+	return false
 end
 
 function Quest:needPokecenter()
@@ -153,9 +176,11 @@ function Quest:isPokemonBlacklisted(pokemonName)
 end
 
 function Quest:battleBegin()
+	self.canRun = true
 end
 
 function Quest:battleEnd()
+	self.canRun = true
 end
 
 function Quest:wildBattle()
@@ -181,6 +206,9 @@ function Quest:wildBattle()
 		end
 		return attack() or sendUsablePokemon() or run() or sendAnyPokemon()
 	else
+		if not self.canRun then
+			return attack() or game.useAnyMove()
+		end
 		return run() or attack() or sendUsablePokemon() or sendAnyPokemon()
 	end
 end
@@ -188,6 +216,9 @@ end
 function Quest:trainerBattle()
 	-- bug: if last pokemons have only damaging but type ineffective
 	-- attacks, then we cannot use the non damaging ones to continue.
+	if not self.canRun then -- trying to switch while a pokemon is squeezed end up in an infinity loop
+		return attack() or game.useAnyMove()
+	end
 	return attack() or sendUsablePokemon() or sendAnyPokemon() -- or game.useAnyMove()
 end
 
@@ -217,7 +248,9 @@ function Quest:dialog(message)
 end
 
 function Quest:battleMessage(message)
-	if sys.stringContains(message, "black out") and self.level < 100 and self:isTrainingOver() then
+	if sys.stringContains(message, "You can not run away!") then
+		sys.canRun = false
+	elseif sys.stringContains(message, "black out") and self.level < 100 and self:isTrainingOver() then
 		self.level = self.level + 1
 		self:startTraining()
 		log("Increasing " .. self.name .. " quest level to " .. self.level .. ". Training time!")
