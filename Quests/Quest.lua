@@ -243,7 +243,7 @@ function Quest:chooseForgetMove(moveName, pokemonIndex) -- Calc the WrostAbility
 		local MoveName = getPokemonMoveName(pokemonIndex, moveId)
 		if MoveName == nil or MoveName == "cut" or MoveName == "surf" or MoveName == "flash" then
 		else
-		local CalcMoveTP = math.modf((getPokemonMaxPowerPoints(pokemonIndex,moveId) * getPokemonMovePower(pokemonIndex,moveId))/(math.abs(getPokemonMoveAccuracy(pokemonIndex,moveId)) / 100))
+		local CalcMoveTP = math.modf((getPokemonMaxPowerPoints(pokemonIndex,moveId) * getPokemonMovePower(pokemonIndex,moveId))*(math.abs(getPokemonMoveAccuracy(pokemonIndex,moveId)) / 100))
 			if CalcMoveTP < ForgetMoveTP then
 				ForgetMoveTP = CalcMoveTP
 				ForgetMoveName = MoveName
