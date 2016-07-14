@@ -54,7 +54,7 @@ function ThunderBadgeQuest:isDoable()
 end
 
 function ThunderBadgeQuest:isDone()
-	if getMapgetMapName == "Vermilion City 2" or getMapgetMapName == "SSAnne 1F" or getMapName() == "Route 11" then
+	if getMapName() == "Vermilion City 2" or getMapName() == "SSAnne 1F" or getMapName() == "Route 11" then
 		return true
 	else
 		return false
