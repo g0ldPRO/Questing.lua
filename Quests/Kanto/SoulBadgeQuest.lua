@@ -14,18 +14,25 @@ local name		  = 'Sould Badge'
 local description = 'Fuchsia City'
 local level = 40
 
+local dialogs = {
+	questSurfAccept = Dialog:new({ 
+		"There is something there I want you to take",
+		"Did you get the HM broseph"
+	})
+}
+
 local SoulBadgeQuest = Quest:new()
 
 function SoulBadgeQuest:new()
-	local o = Quest.new(SoulBadgeQuest, name, description, level)
+	local o = Quest.new(SoulBadgeQuest, name, description, level, dialogs)
 	o.zoneExp = 1
 	return o
 end
 
 function SoulBadgeQuest:isDoable()
 	if self:hasMap() then
-		if getMapName() == "Fuchsia City" then 
-			if hasItem("Soul Badge") then
+		if getMapName() == "Route 15" then 
+			if hasItem("Soul Badge") and hasItem("HM03 - Surf") then
 				return false
 			else
 				return true
@@ -38,7 +45,7 @@ function SoulBadgeQuest:isDoable()
 end
 
 function SoulBadgeQuest:isDone()
-	if hasItem("Soul Badge") and getMapName() == "Fuchsia City" then
+	if (hasItem("Soul Badge") and hasItem("HM03 - Surf") and getMapName() == "Route 15") or getMapName() == "Safari Entrance" then
 		return true
 	else
 		return false
@@ -57,7 +64,7 @@ function SoulBadgeQuest:pokemart_()
 			if maximumBuyablePokeballs < pokeballToBuy then
 				pokeballToBuy = maximumBuyablePokeballs
 			end
-			return buyItem("Pokeball", pokeballToBuy)
+				return buyItem("Pokeball", pokeballToBuy)
 		end
 	else
 		return moveToMap("Fuchsia City")
@@ -69,6 +76,11 @@ function SoulBadgeQuest:needPokemart_()
 		return true
 	end
 	return false
+end
+
+function SoulBadgeQuest:canEnterSafari()
+	return getMoney() > 5000
+	
 end
 
 function SoulBadgeQuest:randomZoneExp()
@@ -90,7 +102,7 @@ function SoulBadgeQuest:randomZoneExp()
 		else
 			return moveToCell(64,14)
 		end
-	else 
+	else
 		if game.inRectangle(89,14,91,18) then--Zone 4
 			return moveToGrass()
 		else
@@ -104,7 +116,11 @@ function SoulBadgeQuest:PokecenterFuchsia()
 end
 
 function SoulBadgeQuest:Route18()
-	return moveToMap("Fuchsia City")
+	if not self:canEnterSafari() then
+		return moveToMap("Fuchsia City")
+	else
+		return moveToGrass()
+	end
 end
 
 function SoulBadgeQuest:FuchsiaCity()
@@ -120,27 +136,59 @@ function SoulBadgeQuest:FuchsiaCity()
 		return moveToMap("Route 15 Stop House")
 	elseif not hasItem("Soul Badge") then
 		return moveToMap("Fuchsia Gym")
+	elseif not self:canEnterSafari() then
+		return moveToMap("Route 18")
+	elseif not hasItem("HM03 - Surf") then
+		if not dialogs.questSurfAccept.state then
+			return moveToMap("Fuchsia City Stop House")
+		else
+			return moveToMap("Safari Stop")
+		end
 	else
-		return fatal("need continue coding for get surf on next quest")
+		return moveToMap("Route 15 Stop House")
 	end
 end
 
 function SoulBadgeQuest:SafariStop()
 	if self:needPokemart_() then
 		self:pokemart_()
-	elseif hasItem("Soul Badge") then
-		return moveToMap("Fuchsia City")
+	elseif hasItem("Soul Badge") and dialogs.questSurfAccept.state then
+		if not hasItem("HM03 - Surf") and self:canEnterSafari() then
+			return talkToNpcOnCell(7,4)
+		else
+			return moveToMap("Fuchsia City")
+		end
 	else
 		return moveToMap("Fuchsia City")
 	end
 end
 
 function SoulBadgeQuest:Route15StopHouse()
-	if self:needPokecenter() or self:isTrainingOver() or not self.registeredPokecenter == "Pokecenter Fuchsia" then
+	if self:needPokecenter() or not self.registeredPokecenter == "Pokecenter Fuchsia" then
 		return moveToMap("Fuchsia City")
-	else
+	elseif hasItem("HM03 - Surf") then
+		return moveToMap("Route 15")
+	elseif not self:isTrainingOver() then
 		self.zoneExp = math.random(1,4)
 		return moveToMap("Route 15")
+	else
+		return moveToMap("Route 15")
+	end
+end
+
+function SoulBadgeQuest:FuchsiaCityStopHouse()
+	if dialogs.questSurfAccept.state then
+		return moveToMap("Fuchsia City")
+	else
+		return moveToMap("Route 19")
+	end
+end
+
+function SoulBadgeQuest:Route19()
+	if dialogs.questSurfAccept.state then
+		return moveToMap("Fuchsia City Stop House")
+	else
+		return talkToNpcOnCell(33,19)
 	end
 end
 
