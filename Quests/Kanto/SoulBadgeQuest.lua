@@ -26,10 +26,11 @@ local SoulBadgeQuest = Quest:new()
 function SoulBadgeQuest:new()
 	local o = Quest.new(SoulBadgeQuest, name, description, level, dialogs)
 	o.zoneExp = 1
+	o.pokemonId = 1
 	return o
 end
 
-function SoulBadgeQuest:isDoable()
+function SoulBadgeQuest:isDoable()	
 	if self:hasMap() then
 		if getMapName() == "Route 15" then 
 			if hasItem("Soul Badge") and hasItem("HM03 - Surf") then
@@ -45,7 +46,7 @@ function SoulBadgeQuest:isDoable()
 end
 
 function SoulBadgeQuest:isDone()
-	if (hasItem("Soul Badge") and hasItem("HM03 - Surf") and getMapName() == "Route 15") or getMapName() == "Safari Entrance" then
+	if (hasItem("Soul Badge") and hasItem("HM03 - Surf") and getMapName() == "Route 15") or getMapName() == "Safari Entrance" or getMapName() == "Route 20"then
 		return true
 	else
 		return false
@@ -124,20 +125,22 @@ function SoulBadgeQuest:Route18()
 end
 
 function SoulBadgeQuest:FuchsiaCity()
-	if self:needPokecenter() or not game.isTeamFullyHealed() or not self.registeredPokecenter == "Pokecenter Fuchsia" then
+	if game.minTeamLevel() >= 60 then
+		return moveToMap("Route 15 Stop House")
+	elseif self:needPokecenter() or not game.isTeamFullyHealed() or not self.registeredPokecenter == "Pokecenter Fuchsia" then
 		return moveToMap("Pokecenter Fuchsia")
 	elseif isNpcOnCell(13,7) then --Item: PP UP
 		return talkToNpcOnCell(13,7)
 	elseif isNpcOnCell(12,10) then --Item: Ultra Ball
 		return talkToNpcOnCell(12,10)
-	elseif self:needPokemart_() then
+	elseif self:needPokemart_() and not hasItem("HM03 - Surf") then --It buy balls if not have badge, at blackoutleveling no
 		return moveToMap("Safari Stop")
 	elseif not self:isTrainingOver() then
 		return moveToMap("Route 15 Stop House")
 	elseif not hasItem("Soul Badge") then
 		return moveToMap("Fuchsia Gym")
 	elseif not self:canEnterSafari() then
-		return moveToMap("Route 18")
+		return moveToMap("Route 18")	
 	elseif not hasItem("HM03 - Surf") then
 		if not dialogs.questSurfAccept.state then
 			return moveToMap("Fuchsia City Stop House")
@@ -145,7 +148,7 @@ function SoulBadgeQuest:FuchsiaCity()
 			return moveToMap("Safari Stop")
 		end
 	else
-		return moveToMap("Route 15 Stop House")
+		return moveToMap("Fuchsia City Stop House")
 	end
 end
 
@@ -164,7 +167,9 @@ function SoulBadgeQuest:SafariStop()
 end
 
 function SoulBadgeQuest:Route15StopHouse()
-	if self:needPokecenter() or not self.registeredPokecenter == "Pokecenter Fuchsia" then
+	if game.minTeamLevel() >= 60 then
+		return moveToMap("Route 15")
+	elseif self:needPokecenter() or not self.registeredPokecenter == "Pokecenter Fuchsia" or self:isTrainingOver() then
 		return moveToMap("Fuchsia City")
 	elseif hasItem("HM03 - Surf") then
 		return moveToMap("Route 15")
@@ -177,18 +182,40 @@ function SoulBadgeQuest:Route15StopHouse()
 end
 
 function SoulBadgeQuest:FuchsiaCityStopHouse()
-	if dialogs.questSurfAccept.state then
+	if game.minTeamLevel() >= 60 then
 		return moveToMap("Fuchsia City")
+	elseif not hasItem("HM03 - Surf") then
+		if dialogs.questSurfAccept.state then
+			return moveToMap("Fuchsia City")
+		else
+			return moveToMap("Route 19")
+		end
 	else
 		return moveToMap("Route 19")
 	end
 end
 
 function SoulBadgeQuest:Route19()
-	if dialogs.questSurfAccept.state then
+	if game.minTeamLevel() >= 60 then
 		return moveToMap("Fuchsia City Stop House")
+	elseif hasItem("HM03 - Surf") then
+		if not game.hasPokemonWithMove("Surf") then
+			if self.pokemonId < getTeamSize() then					
+				useItemOnPokemon("HM03 - Surf", self.pokemonId)
+				log("Pokemon: " .. self.pokemonId .. " Try Learning: HM03 - Surf")
+				self.pokemonId = self.pokemonId + 1
+			else
+				fatal("No pokemon in this team can learn - Surf")
+			end
+		else
+			return moveToMap("Route 20")
+		end
 	else
-		return talkToNpcOnCell(33,19)
+		if dialogs.questSurfAccept.state then
+			return moveToMap("Fuchsia City Stop House")
+		else
+			return talkToNpcOnCell(33,19)
+		end
 	end
 end
 
