@@ -90,7 +90,11 @@ function ExpForSaffronQuest:SeafoamB4F()
 			if self:canUseNurse() then -- if have 1500 money
 				return talkToNpcOnCell(59,13)
 			else
-				return fatal("not enough money for continue exp (minium 1500 money)")
+				if not game.getTotalUsablePokemonCount() > 1 then
+				    fatal("don't have enough Pokemons for farm 1500 money and heal the team")
+				else 
+				    return moveToRectangle(50,10,62,32)
+				end
 			end
 		else
 			return moveToRectangle(50,10,62,32)
