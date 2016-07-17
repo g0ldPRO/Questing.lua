@@ -155,10 +155,10 @@ function RainbowBadgeQuest:CeladonMart6()
 		if not isShopOpen() then
 			return talkToNpcOnCell(15, 7)
 		else
-			if getMoney() > 1000 then
-				return buyItem("Fresh Water", 5)
+			if getMoney() > 1750 then
+				return buyItem("Lemonade", 5)
 			else
-				return buyItem("Fresh Water",(getMoney()/200))
+				return buyItem("Lemonade",(getMoney()/350))
 			end
 		end
 	else
