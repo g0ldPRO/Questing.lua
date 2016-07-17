@@ -109,6 +109,16 @@ function game.getUsablePokemonCountUnderLevel(level)
 	return count
 end
 
+function game.getTotalUsablePokemonCount()
+	local count = 0
+	for pokemonId=1, getTeamSize(), 1 do
+		if isPokemonUsable(pokemonId) then
+			count = count + 1
+		end
+	end
+	return count
+end
+
 function game.getFirstUsablePokemon()
 	for pokemonId=1, getTeamSize(), 1 do
 		if isPokemonUsable(pokemonId) then
