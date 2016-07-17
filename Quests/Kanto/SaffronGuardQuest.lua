@@ -87,8 +87,16 @@ function SaffronGuardQuest:Route11()
 	end
 end
 
+function SaffronGuardQuest:VermilionPokemart()
+	self:pokemart("Vermilion City")
+end
+
 function SaffronGuardQuest:VermilionCity()
-	return moveToMap("Route 6")
+	if self:needPokemart() and getMoney() > 200 then
+		return moveToMap("Vermilion Pokemart")
+	else	
+		return moveToMap("Route 6")
+	end
 end
 
 function SaffronGuardQuest:Route6()
