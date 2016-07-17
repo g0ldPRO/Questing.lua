@@ -21,7 +21,7 @@ function ToCinnabarQuest:new()
 end
 
 function ToCinnabarQuest:isDoable()
-	if self:hasMap() and not hasItem("Cinnabar Key") then
+	if self:hasMap() and not hasItem("Volcano Badge") then
 		return true
 	end
 	return false
