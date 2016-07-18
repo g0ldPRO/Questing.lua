@@ -108,6 +108,20 @@ function Quest:leftovers()
 	end
 end
 
+function Quest:useBike()
+	if hasItem("Bicycle") then
+		if isOutside() and not isMounted() and not isSurfing() then
+			useItem("Bicycle")
+			log("Using: Bicycle")
+			return true --Mounting the Bike
+		else
+			return false
+		end
+	else
+		return false
+	end
+end
+
 function Quest:startTraining()
 	self.training = true
 end
@@ -189,6 +203,9 @@ function Quest:path()
 		return sortTeamByLevelAscending()
 	end
 	if self:leftovers() then
+		return true
+	end
+	if self:useBike() then
 		return true
 	end
 	local mapFunction = self:mapToFunction()
