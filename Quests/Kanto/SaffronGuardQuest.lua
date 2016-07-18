@@ -14,16 +14,12 @@ local name		  = 'Saffron Guard'
 local description = 'Route 15 to Saffron City'
 local level = 55
 
-local dialogs = {
-	xxx = Dialog:new({ 
-		" "
-	})
-}
-
 local SaffronGuardQuest = Quest:new()
 
 function SaffronGuardQuest:new()
-	return Quest.new(SaffronGuardQuest, name, description, level, dialogs)
+	local o = Quest.new(SaffronGuardQuest, name, description, level)
+	o.BUY_BIKE = false --Put True if u  want buy Bike (i will add same thing on Johto Quests)
+	return o
 end
 
 function SaffronGuardQuest:isDoable()
@@ -92,10 +88,30 @@ function SaffronGuardQuest:VermilionPokemart()
 end
 
 function SaffronGuardQuest:VermilionCity()
-	if self:needPokemart() and getMoney() > 200 then
+	if self.BUY_BIKE and getMoney() > 75000 and not hasItem("Bike Voucher") and not hasItem("Bicycle") then
+		return moveToCell(32,21)
+	elseif self:needPokemart() and getMoney() > 200 then
 		return moveToMap("Vermilion Pokemart")
-	else	
+	elseif not hasItem("Old Rod") then
+		return moveToMap("Fisherman House - Vermilion")
+	else
 		return moveToMap("Route 6")
+	end
+end
+
+function SaffronGuardQuest:VermilionHouse2Bottom()
+	if self.BUY_BIKE and getMoney() > 75000 and not hasItem("Bike Voucher") and not hasItem("Bicycle")then
+		return talkToNpcOnCell(8,6)
+	else
+		return moveToMap("Vermilion City")
+	end
+end
+
+function SaffronGuardQuest:FishermanHouseVermilion()
+	if not hasItem("Old Rod") then
+		return talkToNpcOnCell(0,6)
+	else
+		return moveToMap("Vermilion City")
 	end
 end
 
