@@ -31,7 +31,7 @@ function SoulBadgeQuest:new()
 end
 
 function SoulBadgeQuest:isDoable()	
-	if self:hasMap() then
+	if self:hasMap() and not hasItem("Marsh Badge") then
 		if getMapName() == "Route 15" then 
 			if hasItem("Soul Badge") and hasItem("HM03 - Surf") then
 				return false
