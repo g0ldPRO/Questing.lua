@@ -36,7 +36,7 @@ function MarshBadgeQuest:isDoable()
 end
 
 function MarshBadgeQuest:isDone()
-	if (hasItem("Marsh Badge") and getMapName() == "Route 8") or getMapName() == "Silph Co 1F"then
+	if (hasItem("Marsh Badge") and getMapName() == "Route 8") or getMapName() == "Silph Co 1F" or getMapName() == "Route 5" then
 		return true
 	else
 		return false
@@ -51,9 +51,19 @@ function MarshBadgeQuest:Route8StopHouse()
 	end
 end
 
+function MarshBadgeQuest:Route5StopHouse()
+	if hasItem("Bike Voucher") then
+		return moveToMap("Route 5")
+	else
+		return moveToMap("Saffron City")
+	end
+end
+
 function MarshBadgeQuest:SaffronCity()
 	if self:needPokecenter() or not game.isTeamFullyHealed() or not self.registeredPokecenter == "Pokecenter Saffron" then
 		return moveToMap("Pokecenter Saffron")
+	elseif hasItem("Bike Voucher") then
+		return moveToMap("Route 5 Stop House")
 	elseif isNpcOnCell(49,14) then --Rocket on SaffronGym Entrance
 		return moveToMap("Silph Co 1F")
 	elseif not dialogs.dojoSaffronDone.state and not self.dojoState then --Need Check dojo
