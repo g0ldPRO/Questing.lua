@@ -10,153 +10,127 @@ local game   = require "Libs/gamelib"
 local Quest  = require "Quests/Quest"
 local Dialog = require "Quests/Dialog"
 
-local name		  = 'Traveling'
-local description = ' Route 8 To Cinnabar Island'
+local name		  = 'Saffron Guard'
+local description = 'Route 15 to Saffron City'
 local level = 55
 
-local ToCinnabarQuest = Quest:new()
+local SaffronGuardQuest = Quest:new()
 
-function ToCinnabarQuest:new()
-	return Quest.new(ToCinnabarQuest, name, description, level)
+function SaffronGuardQuest:new()
+	local o = Quest.new(SaffronGuardQuest, name, description, level)
+	o.BUY_BIKE = true
+	return o
 end
 
-function ToCinnabarQuest:isDoable()
-	if self:hasMap() and not hasItem("Volcano Badge") then
+function SaffronGuardQuest:isDoable()
+	if self:hasMap() and not hasItem("Marsh Badge") then
 		return true
 	end
 	return false
 end
 
-function ToCinnabarQuest:isDone()
-	return getMapName() == "Cinnabar Island"
-end
-
-function ToCinnabarQuest:Route8()
-	return moveToMap("Lavender Town")
-end
-
-function ToCinnabarQuest:PokecenterLavender()
-	self:pokecenter("Lavender Town")
-end
-
-function ToCinnabarQuest:LavenderTown()
-	if self:needPokecenter() or not game.isTeamFullyHealed() or not self.registeredPokecenter == "Pokecenter Lavender" then
-		return moveToMap("Pokecenter Lavender")
+function SaffronGuardQuest:isDone()
+	if getMapName() == "Saffron City" then
+		return true
 	else
-		return moveToMap("Route 12")
+		return false
 	end
 end
 
-function ToCinnabarQuest:Route12()
-	if isNpcOnCell(18,47) then --NPC: Snorlax
-		return talkToNpcOnCell(18,47)
-	elseif isNpcOnCell(4,73) then --Item: Iron
-		return talkToNpcOnCell(4,73)
-	elseif isNpcOnCell(3,76) then --Item: Rare Candy
-		return talkToNpcOnCell(3,76)
+function SaffronGuardQuest:Route15()
+	if isNpcOnCell(32,14) then --Item: Pecha Berry
+		return talkToNpcOnCell(32,14)
+	elseif isNpcOnCell(33,14) then --Item: Leppa Berry
+		return talkToNpcOnCell(33,14)
+	else
+		return moveToMap("Route 14")
+	end
+end
+
+function SaffronGuardQuest:Route14()
+	if isNpcOnCell(21,38) then --Item: Lum Berry
+		return talkToNpcOnCell(21,38)
+	elseif isNpcOnCell(22,38) then --Item: Lum Berry
+		return talkToNpcOnCell(22,38)
 	else
 		return moveToMap("Route 13")
 	end
 end
 
-function ToCinnabarQuest:Route13()
-	if isNpcOnCell(47,26) then --Item: PP UP
-		return talkToNpcOnCell(47,26)
-	elseif isNpcOnCell(28,27) then --Item: Calcium
-		return talkToNpcOnCell(28,27)
-	elseif isNpcOnCell(21,9) then --Item: Ultra Ball
-		return talkToNpcOnCell(21,9)
+function SaffronGuardQuest:Route13()
+	return moveToMap("Route 12")
+end
+
+function SaffronGuardQuest:Route12()
+	return moveToMap("Route 11 Stop House")
+end
+
+function SaffronGuardQuest:Route11StopHouse()
+	return moveToMap("Route 11")
+end
+
+function SaffronGuardQuest:Route11()
+	if isNpcOnCell(82,22) then --Item: Great Ball
+		return talkToNpcOnCell(82,22)
+	elseif isNpcOnCell(79,8) then --Item: Chesto Berry
+		return talkToNpcOnCell(79,8)
+	elseif isNpcOnCell(80,8) then --Item: Perism Berry
+		return talkToNpcOnCell(80,8)
+	elseif isNpcOnCell(21,8) then --Item: Awakening
+		return talkToNpcOnCell(21,8)
 	else
-		return moveToCell(18,34) --Fixed: Can't Use moveToMap("Route 14") 1 cell of this link is on water
+		return moveToMap("Vermilion City")
 	end
 end
 
-function ToCinnabarQuest:Route14()
-	if isNpcOnCell(21,38) then --Item: Lum Berry
-		return talkToNpcOnCell(21,38)
-	elseif isNpcOnCell(22,38) then --Item: Lum Berry
-		return talkToNpcOnCell(22,38)
-	elseif isNpcOnCell(12,3) and game.hasPokemonWithMove("Cut")then --Item: Zync
-		return talkToNpcOnCell(12,3)
+function SaffronGuardQuest:VermilionPokemart()
+	self:pokemart("Vermilion City")
+end
+
+function SaffronGuardQuest:VermilionCity()
+	if self.BUY_BIKE and getMoney() > 75000 and not hasItem("Bike Voucher") and not hasItem("Bicycle") then
+		return moveToCell(32,21)
+	elseif self:needPokemart() and getMoney() > 200 then
+		return moveToMap("Vermilion Pokemart")
+	elseif not hasItem("Old Rod") then
+		return moveToMap("Fisherman House - Vermilion")
 	else
-		return moveToMap("Route 15")
+		return moveToMap("Route 6")
 	end
 end
 
-function ToCinnabarQuest:Route15()
-	if isNpcOnCell(52,24) then --Item: TM-18: Counter
-		return talkToNpcOnCell(52,24)
-	elseif isNpcOnCell(32,14) then --Item: Pecha Berry
-		return talkToNpcOnCell(32,14)
-	elseif isNpcOnCell(33,14) then --Item: Leppa Berry
-		return talkToNpcOnCell(33,14)
-	elseif isNpcOnCell(12,14) then --Item: PP UP
-		return talkToNpcOnCell(12,14)
+function SaffronGuardQuest:VermilionHouse2Bottom()
+	if self.BUY_BIKE and getMoney() > 75000 and not hasItem("Bike Voucher") and not hasItem("Bicycle")then
+		return talkToNpcOnCell(8,6)
 	else
-		return moveToMap("Route 15 Stop House")
+		return moveToMap("Vermilion City")
 	end
 end
 
-function ToCinnabarQuest:Route15StopHouse()
-	return moveToMap("Fuchsia City")
-end
-
-function ToCinnabarQuest:PokecenterFuchsia()
-	self:pokecenter("Fuchsia City")
-end
-
-function ToCinnabarQuest:FuchsiaCity()
-	if self:needPokecenter() or not game.isTeamFullyHealed() or not self.registeredPokecenter == "Pokecenter Fuchsia" then
-		return moveToMap("Pokecenter Fuchsia")
+function SaffronGuardQuest:FishermanHouseVermilion()
+	if not hasItem("Old Rod") then
+		return talkToNpcOnCell(0,6)
 	else
-		return moveToMap("Fuchsia City Stop House")
+		return moveToMap("Vermilion City")
 	end
 end
 
-function ToCinnabarQuest:FuchsiaCityStopHouse()	
-	return moveToMap("Route 19")
-end
-
-function ToCinnabarQuest:Route19()
-	if not game.hasPokemonWithMove("Surf") then
-		if self.pokemonId < getTeamSize() then					
-			useItemOnPokemon("HM03 - Surf", self.pokemonId)
-			log("Pokemon: " .. self.pokemonId .. " Try Learning: HM03 - Surf")
-			self.pokemonId = self.pokemonId + 1
-		else
-			fatal("No pokemon in this team can learn - Surf")
-		end
+function SaffronGuardQuest:Route6()
+	if isNpcOnCell(31, 5) then -- Berry 1
+		return talkToNpcOnCell(31, 5)
+	elseif isNpcOnCell(32, 5) then -- Berry 2
+		return talkToNpcOnCell(32, 5)
+	elseif isNpcOnCell(37, 5) then -- Berry 3
+		return talkToNpcOnCell(37, 5)
+	elseif isNpcOnCell(38, 5) then -- Berry 4
+		return talkToNpcOnCell(38, 5)
 	else
-		return moveToMap("Route 20")
+		return moveToMap("Route 6 Stop House")
 	end
 end
 
-function ToCinnabarQuest:Route20()
-	if game.inRectangle(52,16,120,36) then
-		return moveToCell(60,32)
-	elseif game.inRectangle(0,15,51,47) or game.inRectangle(52,40,81,46) then
-		return moveToMap("Cinnabar Island")
-	else
-		error("ToCinnabarQuest:Route20(): [" .. getPlayerX() .. "," .. getPlayerY() .. "] is not a known position")
-	end
+function SaffronGuardQuest:Route6StopHouse()
+	return moveToMap("Saffron City")
 end
 
-function ToCinnabarQuest:Seafoam1F()
-	if game.inRectangle(7,7,20,16) then
-		return moveToCell(20,8)
-	elseif game.inRectangle(64,7,77,15)then
-		return moveToCell(71,15)
-	else
-		error("ToCinnabarQuest:Seafoam1F(): [" .. getPlayerX() .. "," .. getPlayerY() .. "] is not a known position")
-	end
-end
-
-function ToCinnabarQuest:SeafoamB1F()
-	if isNpcOnCell(38,17) then
-		return talkToNpcOnCell(38,17) --Item: Ice Heal
-	else
-		return moveToCell(85,22)
-	end
-end
-
-return ToCinnabarQuest
+return SaffronGuardQuest
