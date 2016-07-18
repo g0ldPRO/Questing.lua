@@ -35,6 +35,7 @@ function Quest:mapToFunction()
 	local mapName = getMapName()
 	local mapFunction = sys.removeCharacter(mapName, ' ')
 	mapFunction = sys.removeCharacter(mapFunction, '.')
+	mapFunction = sys.removeCharacter(mapFunction, '-') -- Map "Fisherman House - Vermilion"
 	return mapFunction
 end
 
