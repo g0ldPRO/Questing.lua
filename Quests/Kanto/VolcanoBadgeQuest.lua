@@ -12,7 +12,7 @@ local Dialog = require "Quests/Dialog"
 
 local name		  = 'Volcano Badge'
 local description = 'Revive Fossil + Cinnabar Key + Exp on Seafoam B4F'
-local level = 70
+local level = 75
 
 local VolcanoBadgeQuest = Quest:new()
 
